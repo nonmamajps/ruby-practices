@@ -10,7 +10,7 @@ params = {}
 
 #opt.on('-m') {|m| params[:month] = m } #これと18行目のmonthは違うもの（do...endにしてみる）
 opt.on('-m') do |m|
-    params[:month] = m 
+  params[:month] = m 
 end
 opt.on('-y') {|y| params[:year] = y }
 
@@ -39,16 +39,14 @@ print "   " * first_day.wday
 #　日付を並べる
 (first_day..last_day).each do |date|
     
-    # 1桁の数字は右つめにする
-    print "%2d" % date.day + " "
-    # 数字を土曜日で折り返しにする
-    if date.saturday?
-        puts "\n"
-    end
+  # 1桁の数字は右つめにする
+  print "%2d" % date.day + " "
+  # 数字を土曜日で折り返しにする
+  if date.saturday?
+    puts "\n"
+  end
 end
 end
 
 # 引数で年月日を表示
 #print_calendar(year, month)
-
-# 
