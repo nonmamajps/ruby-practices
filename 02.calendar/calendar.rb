@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # Dateクラス取り込む
 require 'date'
 
@@ -9,18 +10,19 @@ opt = OptionParser.new
 params = {}
 
 #opt.on('-m') {|m| params[:month] = m } #これと18行目のmonthは違うもの（do...endにしてみる）
-opt.on('-m') do |m|
-  params[:month] = m 
+opt.on('-m MONTH', Integer) do |m|
+  params[:month] = m
 end
-opt.on('-y') {|y| params[:year] = y }
+opt.on('-y YEAR', Integer) do |y|
+  params[:year] = y
+end
 
-opt.parse!
+opt.parse!(ARGV)
 
 today = Date.today
 year = params[:year] || Date.today.year 
 month = params[:month] || Date.today.month 
 
-#def print_calendar(year,month)
 
 # 今月の最初の日
 first_day = Date.new(year, month, 1)
@@ -40,13 +42,9 @@ print "   " * first_day.wday
 (first_day..last_day).each do |date|
     
   # 1桁の数字は右つめにする
-  print "%2d" % date.day + " "
+  print date.day.to_s.rjust(2) + " "
   # 数字を土曜日で折り返しにする
   if date.saturday?
     puts "\n"
   end
 end
-end
-
-# 引数で年月日を表示
-#print_calendar(year, month)
