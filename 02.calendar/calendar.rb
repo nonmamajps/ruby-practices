@@ -48,3 +48,4 @@ print "   " * first_day.wday
     puts
   end
 end
+puts
