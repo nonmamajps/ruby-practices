@@ -42,9 +42,9 @@ print "   " * first_day.wday
 (first_day..last_day).each do |date|
     
   # 1桁の数字は右つめにする
-  print date.day.to_s.rjust(2) + " "
+  print "#{date.day.to_s.rjust(2)} "
   # 数字を土曜日で折り返しにする
   if date.saturday?
-    puts "\n"
+    puts
   end
 end
