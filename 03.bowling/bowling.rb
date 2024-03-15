@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-score = ARGV[0] # 引数を受け取る
-scores = score.split(',') # 受け取った引数を1投ずつに,を入れる
-shots = [] # 数字に変換（配列に入れる）
+score = ARGV[0]
+scores = score.split(',')
+shots = []
 
 scores.each do |s|
   if s == 'X' # ストライク
