@@ -14,19 +14,11 @@ scores.each do |s|
   end
 end
 
-frames = shots.each_slice(2).to_a do |s|
-  frames << s
-end
+frames = shots.each_slice(2).to_a
 
 # ストライクとスペア加算
 point = frames[0..9].each_with_index.sum do |frame, idx|
-  if frames[9] == 10 || frames[9].sum == 10
-    if frames[9] == 10 && frames[10][0] == 10
-      frames[9][0] + frames[10][0] + frames[11][0]
-    else
-      frames[9].sum + frames[10].sum
-    end
-  end
+  frames[9][0] + frames[10][0] + frames[11][0] if frames[9] == 10 && frames[10][0] == 10
   if frame[0] == 10 # strike # [10, 0]この状態のこと
     if frames[idx + 0][0] == 10 && frames[idx + 1][0] == 10 # 今回と次の投球がストライクだった場合
       frame.sum +
