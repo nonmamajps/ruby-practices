@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+def file_to_array
+  get_files = Dir.glob('*')
+  files = get_files.each_slice(3).to_a
+  # 配列内の要素が3つに揃うように空白を追加
+  files.each do |add|
+    add.concat([''] * (3 - add.size)) if add.size < 3
+  end
+
+  # 各要素を縦に並べる
+  files.transpose.each do |row|
+    print_file_to_display(row)
+  end
+end
+
+def print_file_to_display(files)
+  max_length = files.map(&:length).max
+  files.each do |file|
+    print "#{file.ljust(max_length + 1)}#{' ' * (23 - max_length)}"
+  end
+  puts
+end
+
+file_to_array
