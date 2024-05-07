@@ -1,12 +1,15 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-def file_to_array
-  get_files = Dir.glob('*')
-  files = get_files.each_slice(3).to_a
+BLANK_SIZE = 23
+ARRAY_FULL_SIZE = 3
+
+def files_to_matrix
+  files_from_current_directory = Dir.glob('*')
+  files = files_from_current_directory.each_slice(3).to_a
   # 配列内の要素が3つに揃うように空白を追加
-  files.each do |add|
-    add.concat([''] * (3 - add.size)) if add.size < 3
+  files.each do |array_to_three|
+    array_to_three.concat([''] * (ARRAY_FULL_SIZE - array_to_three.size)) if array_to_three.size < ARRAY_FULL_SIZE
   end
 
   # 各要素を縦に並べる
@@ -18,9 +21,9 @@ end
 def print_file_to_display(files)
   max_length = files.map(&:length).max
   files.each do |file|
-    print "#{file.ljust(max_length + 1)}#{' ' * (23 - max_length)}"
+    print "#{file.ljust(max_length + 1)}#{' ' * (BLANK_SIZE - max_length)}"
   end
   puts
 end
 
-file_to_array
+files_to_matrix
