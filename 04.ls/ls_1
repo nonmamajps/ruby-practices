@@ -2,18 +2,18 @@
 # frozen_string_literal: true
 
 BLANK_SIZE = 23
-ARRAY_FULL_SIZE = 3
+COL_FULL_SIZE = 3
 
 def files_to_matrix
-  files_from_current_directory = Dir.glob('*')
-  files = files_from_current_directory.each_slice(3).to_a
+  files = Dir.glob('*')
+  sliced_files = files.each_slice(COL_FULL_SIZE).to_a
   # 配列内の要素が3つに揃うように空白を追加
-  files.each do |array_to_three|
-    array_to_three.concat([''] * (ARRAY_FULL_SIZE - array_to_three.size)) if array_to_three.size < ARRAY_FULL_SIZE
+  sliced_files.each do |three_col_array|
+    three_col_array.concat([''] * (COL_FULL_SIZE - three_col_array.size)) if three_col_array.size < COL_FULL_SIZE
   end
 
   # 各要素を縦に並べる
-  files.transpose.each do |row|
+  sliced_files.transpose.each do |row|
     print_file_to_display(row)
   end
 end
