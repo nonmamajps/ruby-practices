@@ -8,13 +8,13 @@ def files_to_matrix
   files = Dir.glob('*')
   sliced_files = files.each_slice(COL_FULL_SIZE).to_a
   # 配列内の要素が3つに揃うように空白を追加
-  sliced_files.each do |three_col_array|
-    three_col_array.concat([''] * (COL_FULL_SIZE - three_col_array.size)) if three_col_array.size < COL_FULL_SIZE
+  sliced_files.each do |cols|
+    cols.concat([''] * (COL_FULL_SIZE - cols.size)) if cols.size < COL_FULL_SIZE
   end
 
   # 各要素を縦に並べる
-  sliced_files.transpose.each do |row|
-    print_file_to_display(row)
+  sliced_files.transpose.each do |rows|
+    print_file_to_display(rows)
   end
 end
 
