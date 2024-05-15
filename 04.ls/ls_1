@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 BLANK_SIZE = 23
-COL_FULL_SIZE = 3
+COL_FULL_SIZE = 2
 
 def files_to_matrix
-  files = Dir.glob('*')
+  files = Dir.glob('*', File::FNM_DOTMATCH)
   sliced_files = files.each_slice(COL_FULL_SIZE).to_a
   # 配列内の要素が3つに揃うように空白を追加
   sliced_files.each do |cols|
