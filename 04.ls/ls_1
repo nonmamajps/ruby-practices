@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+BLANK_SIZE = 23
+COL_FULL_SIZE = 3
+
+def files_to_matrix
+  files = Dir.glob('*')
+  sliced_files = files.each_slice(COL_FULL_SIZE).to_a
+  # 配列内の要素が3つに揃うように空白を追加
+  sliced_files.each do |cols|
+    cols.concat([''] * (COL_FULL_SIZE - cols.size)) if cols.size < COL_FULL_SIZE
+  end
+
+  # 各要素を縦に並べる
+  sliced_files.transpose.each do |rows|
+    print_file_to_display(rows)
+  end
+end
+
+def print_file_to_display(files)
+  max_length = files.map(&:length).max
+  files.each do |file|
+    print "#{file.ljust(max_length + 1)}#{' ' * (BLANK_SIZE - max_length)}"
+  end
+  puts
+end
+
+files_to_matrix
