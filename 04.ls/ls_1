@@ -1,19 +1,38 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-BLANK_SIZE = 23
-COL_FULL_SIZE = 2
+require 'optparse'
+options = {}
+opt = OptionParser.new
+opt.on('-a') do |all_files|
+  options[:all_files] = all_files
+end
 
-def files_to_matrix
-  files = Dir.glob('*', File::FNM_DOTMATCH)
+opt.parse!(ARGV)
+
+BLANK_SIZE = 23
+COL_FULL_SIZE = 3
+
+def fetch_files(all_files)
+  if all_files
+    Dir.glob('*', File::FNM_DOTMATCH)
+  else
+    Dir.glob('*')
+  end
+end
+
+def files_to_matrix(options)
+  files = fetch_files(options[:all_files])
   sliced_files = files.each_slice(COL_FULL_SIZE).to_a
   # 配列内の要素が3つに揃うように空白を追加
   sliced_files.each do |cols|
     cols.concat([''] * (COL_FULL_SIZE - cols.size)) if cols.size < COL_FULL_SIZE
   end
+end
 
+def print_file(matrix)
   # 各要素を縦に並べる
-  sliced_files.transpose.each do |rows|
+  matrix.transpose.each do |rows|
     print_file_to_display(rows)
   end
 end
@@ -26,4 +45,5 @@ def print_file_to_display(files)
   puts
 end
 
-files_to_matrix
+matrix = files_to_matrix(options)
+print_file(matrix)
