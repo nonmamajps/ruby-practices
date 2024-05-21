@@ -2,6 +2,10 @@
 # frozen_string_literal: true
 
 require 'optparse'
+
+BLANK_SIZE = 23
+COL_FULL_SIZE = 3
+
 options = {}
 opt = OptionParser.new
 opt.on('-a') do |all_files|
@@ -10,15 +14,10 @@ end
 
 opt.parse!(ARGV)
 
-BLANK_SIZE = 23
-COL_FULL_SIZE = 3
-
 def fetch_files(all_files)
-  if all_files
-    Dir.glob('*', File::FNM_DOTMATCH)
-  else
-    Dir.glob('*')
-  end
+  file = '*'
+  option = all_files ? File::FNM_DOTMATCH : 0
+  Dir.glob(file, option)
 end
 
 def files_to_matrix(options)
