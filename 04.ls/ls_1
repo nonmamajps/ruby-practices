@@ -6,18 +6,19 @@ require 'optparse'
 BLANK_SIZE = 23
 COL_FULL_SIZE = 3
 
-options = {}
-opt = OptionParser.new
-opt.on('-a') do |all_files|
-  options[:all_files] = all_files
+def check_option
+  options = {}
+  opt = OptionParser.new
+  opt.on('-a') do |all_files|
+    options[:all_files] = all_files
+  end
+  opt.parse!(ARGV)
+  options
 end
 
-opt.parse!(ARGV)
-
 def fetch_files(all_files)
-  file = '*'
   option = all_files ? File::FNM_DOTMATCH : 0
-  Dir.glob(file, option)
+  Dir.glob('*', option)
 end
 
 def files_to_matrix(options)
@@ -44,5 +45,6 @@ def print_file_to_display(files)
   puts
 end
 
+options = check_option
 matrix = files_to_matrix(options)
 print_file(matrix)
