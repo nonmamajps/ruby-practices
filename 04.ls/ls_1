@@ -12,6 +12,9 @@ def check_option
   opt.on('-a') do |all_files|
     options[:all_files] = all_files
   end
+  opt.on('-r') do |return_files|
+    options[:return_files] = return_files
+  end
   opt.parse!(ARGV)
   options
 end
@@ -23,11 +26,13 @@ end
 
 def files_to_matrix(options)
   files = fetch_files(options[:all_files])
+  files = files.reverse if options[:return_files]
   sliced_files = files.each_slice(COL_FULL_SIZE).to_a
   # 配列内の要素が3つに揃うように空白を追加
   sliced_files.each do |cols|
     cols.concat([''] * (COL_FULL_SIZE - cols.size)) if cols.size < COL_FULL_SIZE
   end
+  sliced_files
 end
 
 def print_file(matrix)
