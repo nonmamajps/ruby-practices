@@ -2,9 +2,11 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'etc'
 
 BLANK_SIZE = 23
 COL_FULL_SIZE = 3
+STAT_BLANK_SIZE = 6
 
 def check_option
   options = {}
@@ -12,9 +14,15 @@ def check_option
   opt.on('-a') do |all_files|
     options[:all_files] = all_files
   end
+
   opt.on('-r') do |reverse_files|
     options[:reverse_files] = reverse_files
   end
+
+  opt.on('-l') do |long_name_files|
+    options[:long_name_files] = long_name_files
+  end
+
   opt.parse!(ARGV)
   options
 end
@@ -50,6 +58,84 @@ def print_file_to_display(files)
   puts
 end
 
+def file_type(stat)
+  case stat.ftype
+  when 'file' then '-'
+  when 'directory' then 'd'
+  when 'link' then 'l'
+  when 'characterSpecial' then 'c'
+  when 'blockSpecial' then 'b'
+  when 'fifo' then 'f'
+  when 'socket' then 's'
+  else
+    'unknown'
+  end
+end
+
+def default_permission(stat)
+  case stat
+  when 0 then '---'
+  when 1 then '--x'
+  when 2 then '-w-'
+  when 3 then '-wx'
+  when 4 then 'r--'
+  when 5 then 'r-x'
+  when 6 then 'rw-'
+  when 7 then 'rwx'
+  end
+end
+
+def owner_permission(stat)
+  permission = '%o' % stat.mode.to_i
+  default_permission(permission[-3].to_i)
+end
+
+def group_permission(stat)
+  permission = '%o' % stat.mode.to_i
+  default_permission(permission[-2].to_i)
+end
+
+def other_permission(stat)
+  permission = '%o' % stat.mode.to_i
+  default_permission(permission[-1].to_i)
+end
+
+def print_of_l_option(options)
+  file_information = []
+file_list = fetch_files(options[:all_files])
+file_list.each do |name|
+  file_information << File.lstat(name)
+end
+puts "total #{file_information.size}"
+file_list.each_with_index do |name, idx|
+  stat = file_information[idx]
+  file_type = file_type(stat)
+  owner_permission = owner_permission(stat)
+  group_permission = group_permission(stat)
+  other_permission = other_permission(stat)
+  # ファイルタイプ、パーミッション、ハードリンク数、オーナー名、グループ名、バイトサイズ、タイムスタンプ、ファイル名の順
+  print = "#{file_type}"\
+  "#{owner_permission}"\
+  "#{group_permission}"\
+  "#{other_permission}  "\
+  "#{stat.nlink.to_s.rjust(2)} "\
+  "#{Etc.getpwuid(stat.uid).name}  "\
+  "#{Etc.getgrgid(stat.gid).name}"\
+  "#{stat.size.to_s.rjust(STAT_BLANK_SIZE)} "\
+  "#{stat.atime.mon.to_s.rjust(2)} "\
+  "#{stat.atime.day.to_s.rjust(2)} "\
+  "#{stat.atime.strftime("%H:%M")} "
+
+  print += FileTest.symlink?(name) ? "#{name} -> #{File.readlink(name)}" : "#{name}"
+
+puts print
+end
+end
+
 options = check_option
 matrix = files_to_matrix(options)
-print_file(matrix)
+if options[:long_name_files]
+  print_of_l_option(options)
+else
+  print_file(matrix)
+end
