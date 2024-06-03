@@ -86,50 +86,48 @@ def default_permission(stat)
 end
 
 def owner_permission(stat)
-  permission = '%o' % stat.mode.to_i
+  permission = format('%o', stat.mode.to_i)
   default_permission(permission[-3].to_i)
 end
 
 def group_permission(stat)
-  permission = '%o' % stat.mode.to_i
+  permission = format('%o', stat.mode.to_i)
   default_permission(permission[-2].to_i)
 end
 
 def other_permission(stat)
-  permission = '%o' % stat.mode.to_i
+  permission = format('%o', stat.mode.to_i)
   default_permission(permission[-1].to_i)
 end
 
 def print_of_l_option(options)
   file_information = []
-file_list = fetch_files(options[:all_files])
-file_list.each do |name|
-  file_information << File.lstat(name)
-end
-puts "total #{file_information.size}"
-file_list.each_with_index do |name, idx|
-  stat = file_information[idx]
-  file_type = file_type(stat)
-  owner_permission = owner_permission(stat)
-  group_permission = group_permission(stat)
-  other_permission = other_permission(stat)
-  # ファイルタイプ、パーミッション、ハードリンク数、オーナー名、グループ名、バイトサイズ、タイムスタンプ、ファイル名の順
-  print = "#{file_type}"\
-  "#{owner_permission}"\
-  "#{group_permission}"\
-  "#{other_permission}  "\
-  "#{stat.nlink.to_s.rjust(2)} "\
-  "#{Etc.getpwuid(stat.uid).name}  "\
-  "#{Etc.getgrgid(stat.gid).name}"\
-  "#{stat.size.to_s.rjust(STAT_BLANK_SIZE)} "\
-  "#{stat.atime.mon.to_s.rjust(2)} "\
-  "#{stat.atime.day.to_s.rjust(2)} "\
-  "#{stat.atime.strftime("%H:%M")} "
+  file_list = fetch_files(options[:all_files])
+  file_list.each do |name|
+    file_information << File.lstat(name)
+  end
+  puts "total #{file_information.size}"
 
-  print += FileTest.symlink?(name) ? "#{name} -> #{File.readlink(name)}" : "#{name}"
-
-puts print
-end
+  file_list.each_with_index do |name, idx|
+    stat = file_information[idx]
+    file_type = file_type(stat)
+    owner_permission = owner_permission(stat)
+    group_permission = group_permission(stat)
+    other_permission = other_permission(stat)
+    print = "#{file_type}"\
+    "#{owner_permission}"\
+    "#{group_permission}"\
+    "#{other_permission}  "\
+    "#{stat.nlink.to_s.rjust(2)} "\
+    "#{Etc.getpwuid(stat.uid).name}  "\
+    "#{Etc.getgrgid(stat.gid).name}"\
+    "#{stat.size.to_s.rjust(STAT_BLANK_SIZE)} "\
+    "#{stat.atime.mon.to_s.rjust(2)} "\
+    "#{stat.atime.day.to_s.rjust(2)} "\
+    "#{stat.atime.strftime('%H:%M')} "
+    print += FileTest.symlink?(name) ? "#{name} -> #{File.readlink(name)}" : name
+    puts print
+  end
 end
 
 options = check_option
