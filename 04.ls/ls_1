@@ -85,39 +85,29 @@ def default_permission(stat)
   end
 end
 
-def owner_permission(stat)
-  permission = format('%o', stat.mode.to_i)
-  default_permission(permission[-3].to_i)
+def permission(stat)
+  permissions = format('%o', stat.mode.to_i)[-3..]
+  owner_perm = default_permission(permissions[0].to_i)
+  group_perm = default_permission(permissions[1].to_i)
+  other_perm = default_permission(permissions[2].to_i)
+  "#{owner_perm}#{group_perm}#{other_perm}"
 end
 
-def group_permission(stat)
-  permission = format('%o', stat.mode.to_i)
-  default_permission(permission[-2].to_i)
-end
-
-def other_permission(stat)
-  permission = format('%o', stat.mode.to_i)
-  default_permission(permission[-1].to_i)
-end
-
-def print_of_l_option(options)
-  file_information = []
+def file_information(options)
   file_list = fetch_files(options[:all_files])
-  file_list.each do |name|
-    file_information << File.lstat(name)
-  end
-  puts "total #{file_information.size}"
+  file_information = file_list.map { |name| File.lstat(name) }
+  [file_list, file_information]
+end
 
+def print_of_l_option(file_list, file_information)
+  total_blocks = file_information.sum(&:blocks)
+  puts "total #{total_blocks}"
   file_list.each_with_index do |name, idx|
     stat = file_information[idx]
     file_type = file_type(stat)
-    owner_permission = owner_permission(stat)
-    group_permission = group_permission(stat)
-    other_permission = other_permission(stat)
+    permission = permission(stat)
     print = "#{file_type}"\
-    "#{owner_permission}"\
-    "#{group_permission}"\
-    "#{other_permission}  "\
+    "#{permission} "\
     "#{stat.nlink.to_s.rjust(2)} "\
     "#{Etc.getpwuid(stat.uid).name}  "\
     "#{Etc.getgrgid(stat.gid).name}"\
@@ -133,7 +123,8 @@ end
 options = check_option
 matrix = files_to_matrix(options)
 if options[:long_name_files]
-  print_of_l_option(options)
+  file_list, file_information = file_information(options)
+  print_of_l_option(file_list, file_information)
 else
   print_file(matrix)
 end
