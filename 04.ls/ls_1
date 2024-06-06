@@ -116,11 +116,11 @@ end
 
 options = check_option
 file_list = fetch_files(options[:all_files])
-matrix = files_to_matrix(file_list, options[:reverse_files])
 
 if options[:long_name_files]
   file_stat = file_stat(file_list)
   print_of_l_option(file_list, file_stat)
 else
+  matrix = files_to_matrix(file_list, options[:reverse_files])
   print_file(matrix)
 end
