@@ -32,8 +32,8 @@ def fetch_files(all_files)
   Dir.glob('*', option)
 end
 
-def files_to_matrix(file_list, reverse_files)
-  files = reverse_files ? file_list.reverse : file_list
+def files_to_matrix(file_list, options)
+  files = options[:reverse_files] ? file_list.reverse : file_list
   sliced_files = files.each_slice(COL_FULL_SIZE).to_a
   # 配列内の要素が3つに揃うように空白を追加
   sliced_files.each do |cols|
@@ -121,6 +121,6 @@ if options[:long_name_files]
   file_stat = file_stat(file_list)
   print_of_l_option(file_list, file_stat)
 else
-  matrix = files_to_matrix(file_list, options[:reverse_files])
+  matrix = files_to_matrix(file_list, options)
   print_file(matrix)
 end
