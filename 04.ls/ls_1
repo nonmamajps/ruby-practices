@@ -27,8 +27,8 @@ def check_option
   options
 end
 
-def fetch_files(all_files)
-  option = all_files ? File::FNM_DOTMATCH : 0
+def fetch_files(options)
+  option = options[:all_files] ? File::FNM_DOTMATCH : 0
   Dir.glob('*', option)
 end
 
@@ -115,7 +115,7 @@ def print_of_l_option(file_list, file_stat)
 end
 
 options = check_option
-file_list = fetch_files(options[:all_files])
+file_list = fetch_files(options)
 
 if options[:long_name_files]
   file_stat = file_stat(file_list)
